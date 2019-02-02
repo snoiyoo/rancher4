@@ -16,4 +16,13 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
+      - run: v1-dependencies-{{checksum "package.json"}}
+      - run:
+          name: "Build docker image and push to docker hub"
+          command: |
+              cp Dockerfile.production Dockerfile
+              docker build -t snoiyoo/rancher4:latest .
+              docker build -t snoiyoo/rancher4:${CIRCLE_SHA1} .
+              dokcer push  snoiyoo/rancher4:latest
+              docker push  snoiyoo/rancher4:${CIRCLE_SHA1}
       - run: echo Done
